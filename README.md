@@ -16,3 +16,9 @@ On startup listens on poll for UDP multicast signal to group `239.0.82.66`. On r
 ## Usage
 
 Make a copy of `secrets.template.h` to `secrets.h` and add your network login details.
+
+## Notes
+
+My light has three states, with a pulsing On in between On/Off, so the script simulates two button presses. 
+
+Running UDP Multicast on Windows requires binding the socket to a specific interface before broadcasting, so the scripts create a test connection to `8.8.8.8` on startup to establish the interface. This can be a problem if you have different interfaces for intranet/internet connectivity (like a VPN or a loopback), you can hardcore the interface ID if so instead.

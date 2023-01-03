@@ -21,4 +21,4 @@ Make a copy of `secrets.template.h` to `secrets.h` and add your network login de
 
 My light has three states, with a pulsing On in between On/Off, so the script simulates two button presses. 
 
-Running UDP Multicast on Windows requires binding the socket to a specific interface before broadcasting, so the scripts create a test connection to `8.8.8.8` on startup to establish the interface. This can be a problem if you have different interfaces for intranet/internet connectivity (like a VPN or a loopback), you can hardcore the interface ID if so instead.
+Running UDP Multicast on Windows requires binding the socket to a specific interface before broadcasting (otherwise it fails more or less silently). Since it's common for there to be multiple interfaces available, the scripts create a test connection to `8.8.8.8` on startup to establish which interface to use. This can be a problem if you have different interfaces for intranet/internet connectivity (like a VPN or a loopback) since it'll find the external one, you can hardcode the interface ID if needed.

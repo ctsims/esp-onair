@@ -6,7 +6,17 @@ import socket
 import _thread
 import importlib
 import time
+import requests
 from uuid import getnode
+
+EVENT_ON=None
+EVENT_OFF=None
+try:
+    from secrets import *
+except:
+    print("Couldn't find secrets.py, webhook support unavailable")
+    WEBHOOK_BASE=None
+
 
 #Identify the right networking interface. 
 #NOTE: This makes a network request to figure out which interface is the right one. If you run a VPN this will likely find the VPN interface rather than your local network
@@ -37,6 +47,22 @@ def send(msg):
     sock.sendto(msg, (MCAST_GRP, MCAST_PORT))
     sock.close()
 
+def webhook_on():
+    if not EVENT_ON:
+        return
+    ifttt_webhook(EVENT_ON)
+
+def webhook_off():
+    if not EVENT_OFF:
+        return
+    ifttt_webhook(EVENT_OFF)
+
+def ifttt_webhook(event_id):
+    if not WEBHOOK_BASE:
+        return
+
+    r = requests.get(WEBHOOK_BASE % event_id)
+
 while True:
     time.sleep(1)
     read_status = wc.isActive()
@@ -45,9 +71,11 @@ while True:
         if read_status:
             print("On Air")
             send(MESSAGE_ON)
+            webhook_on()
         else:
             print("Off Air")
             send(MESSAGE_OFF)
+            webhook_off()
 
     current_status = read_status
 
